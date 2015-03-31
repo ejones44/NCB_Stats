@@ -5,6 +5,10 @@ import pandas as pd
 import requests
 import pickle
 import mechanize
+from espn_login import *
+
+
+espn_header = {'1/0': 'H/AB', '1/0': 'H/AB', }
 
 def loginToESPN():
     pass
