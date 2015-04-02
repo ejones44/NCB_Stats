@@ -221,16 +221,25 @@ def scrapePlayerProjections(leagueID, year):
     Pitchers.to_csv('Pitchers_projections.csv')
 
 
-def scrapeTeamPlayers():
+def scrapeTeamPlayers(leagueID, year):
     pass
 
 def scrapeMatchups():
     pass
 
+
+def scrapeLeagueSchedule():
+    pass
+
+
 def scrapeMatchupPlayers():
     pass
 
 
+def scrapeLeagueTeams(leagueID, year):
+    pass
+
 #NCB ID = '12345678'
 #Data League = '158970'
-scrapePlayerProjections('158970','2015')
+# scrapePlayerProjections('158970','2015')
+scrapeTeamPlayers()
