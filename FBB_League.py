@@ -9,9 +9,11 @@ class FBB_League:
     def __init__(self, leagueID, year):
         self.leagueID = leagueID
         self.year = year
-        # data frame containing [teamID, teamName, shortName, wins, losses, draws]
+        # data frame containing
+        # [teamID, teamName, shortName, wins, losses, draws]
         self.teams = pd.DataFrame()
-        #data frame containing all of the matchups [weekID, gameID, teamID, H/A]
+        # data frame containing all of the matchups
+        # [weekID, gameID, teamID, H/A]
         self.matchups = pd.DataFrame()
         #data frame containing all of te results for each weeks matchups
         #[weekID, gameID, teamID, H, R, 2B, 3B, HR, XBH, RBI, BB, SB, AVG, OBP, SLG,
@@ -46,7 +48,7 @@ class FBB_League:
         #[playerID, Name, FBBteamID, gameID, H, AB, R, 2B, 3B, HR, XBH, RBI, BB, SB, AVG, OBP, SLG]
         self.matchUpPitchers = pd.DataFrame()
         #data frame containing all of the teamIDs and their ELO rating
-        #[teamID, ELO, week 1 ELO, , week 2 ELO, ... ]
+        #[teamID, ELO, Init, week 1 ELO, , week 2 ELO, ... ]
         self.ELO = pd.DataFrame()
         #data frame containing all of the information for how much each roster can hold
         # [Roster Position, Num Starters, Min, Max]
@@ -68,6 +70,11 @@ class FBB_League:
     #                                                                           #
     #############################################################################
 
+    def createELO(self):
+        teams = list(self.teams['teamID'])
+        for t in teams:
+            self.ELO = self.ELO.append(pd.Series([t, 1500.0, 1500.0]), ignore_index=True)
+        self.ELO.columns = ['teamID', 'ELO', 'Init']
 
     def updateELO(self, weekID):
         if weekID not in self.ELO.columns:
