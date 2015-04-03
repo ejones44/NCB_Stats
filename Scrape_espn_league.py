@@ -275,19 +275,41 @@ def teamNameToRow(name):
     return [teamID, teamName]
 
 
-def scrapeSeasonStats(leagueID, year):
+def scrapeTeamStats(leagueID, year):
     br = loginToESPN(leagueID, year)
 
     # dataframe will have the following columns:
     #[teamID, teamName, wins, losses, draws]
-    teams = pd.DataFrame()
+    teamStats = pd.DataFrame()
 
     br.open('http://games.espn.go.com/flb/standings?leagueId=' + str(leagueID) + '&seasonId=' + str(year))
     tables = br.find_all('table', class_='tableBody')
     table = tables[-1]
-    rows = table.find_all('tr')[3:]
+    rows = table.find_all('tr')
+    head = rows[2].find_all('td')
+    header = [h.text for h in head]
+    while '' in header:
+        header.remove('')
+    header.insert(0, 'Name')
+    header.insert(0, 'teamID')
+    stats = rows[3:]
+
+    for r in stats:
+        data_row = []
+        data = r.find_all('td')
+        name = teamNameToRow(data[1])
+        data = data[2:-2]
+        for d in data:
+            if is_number(d.text):
+                data_row.append(float(d.text))
+        out = name + data_row
+        print(out)
+        teamStats = teamStats.append(pd.Series(out), ignore_index=True)
+
+    teamStats.columns = header
+    print(teamStats)
+    return teamStats
 
 
-teams = scrapeLeagueTeams('123478', '2015')
-teams.to_csv('NCB_teams.csv')
-print(teams)
+teamStats = scrapeTeamStats('123478', '2015')
+teamStats.to_csv('Team_Season_Stats.csv')
