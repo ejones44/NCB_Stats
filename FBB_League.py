@@ -10,7 +10,7 @@ class FBB_League:
         self.leagueID = leagueID
         self.year = year
         # data frame containing
-        # [teamID, teamName, shortName, wins, losses, draws]
+        # [teamID, teamName, wins, losses, draws]
         self.teams = pd.DataFrame()
         # data frame containing all of the matchups
         # [weekID, gameID, teamID, H/A]
@@ -53,14 +53,15 @@ class FBB_League:
         #data frame containing all of the information for how much each roster can hold
         # [Roster Position, Num Starters, Min, Max]
         # note bench and DL will be roster positions
-        self.rosterInfo = pd.DataFrame()
-
-
+        self.leagueInfo = pd.DataFrame()
+        # data frame containing the season stats for each team
+        #[Name, teamID, ...Scoring Stats...]
+        self.seasonStats = pd.DataFrame()
     # ############################################################################
     #                                                                           #
     #                                                                           #
     #                           League Functions                                #
-    #                                                                           #
+    #                NOTE* No Scraping is done by this class                    #
     #                                                                           #
     #############################################################################
 
@@ -98,28 +99,12 @@ class FBB_League:
         B = 1 / (1 + 10 ** ((teamA - teamB) / 400))
         return A, B
 
-
     #############################################################################
     #                                                                           #
-    #                             Scraping Roster Info                          #
-    #               how many players each team can have, positions, etc.        #
-    #############################################################################
-
-
-
-    #############################################################################
+    #                                 Analysis                                  #
     #                                                                           #
-    #                           Scraping Player Data                            #
-    #              (projections, current rosters, year to date stats)           #
     #############################################################################
 
-
-
-    #############################################################################
-    #                                                                           #
-    #                             Scraping Match ups                            #
-    #         (matchups, matchup results, match up hitters and pitchers)        #
-    #############################################################################
 
 
     #############################################################################
@@ -134,7 +119,7 @@ class FBB_League:
     #############################################################################
     #                                                                           #
     #                                                                           #
-    #                           GETTERS AND SETTERS                             #
+    #                           GETTERS, SETTERS, UPDATERS                      #
     #                                                                           #
     #                                                                           #
     #############################################################################
@@ -189,6 +174,12 @@ class FBB_League:
     def getMatchUpPitchers(self):
         return self.matchUpPitchers
 
+    def getLeagueInfo(self):
+        return self.leagueInfo
+
+    def getSeasonStats(self):
+        return self.seasonStats
+
     #############################################################################
     #                                                                           #
     #                                 Setters                                   #
@@ -236,3 +227,60 @@ class FBB_League:
 
     def setMatchUpPitchers(self, matchUpPitchers):
         self.matchUpPitchers = matchUpPitchers
+
+    def setLeagueInfo(self, leagueInfo):
+        self.leagueInfo = leagueInfo
+
+    def setSeasonStats(self, seasonStats):
+        self.seasonStats = seasonStats
+
+    """
+    #############################################################################
+    #                                                                           #
+    #                                 Updaters                                  #
+    #                                                                           #
+    #############################################################################
+
+    def updateELO(self, ELO):
+        self.ELO = ELO
+
+    def updateTeams(self, teams):
+        self.teams = teams
+
+    def updateMatchups(self, matchups):
+        self.matchups = matchups
+
+    def updateMatchUpResults(self, matchupresults):
+        self.matchupresults = matchupresults
+
+    def updateBatters(self, batters):
+        self.batters = batters
+
+    def updateBatterProjections(self, batterProjections):
+        self.batterProjections = batterProjections
+
+    def updateBatterRosters(self, batterRosters):
+        self.batterRosters = batterRosters
+
+    def updateMatchUpBatters(self, matchUpBatters):
+        self.matchUpBatters = matchUpBatters
+
+    def updatePitchers(self, pitchers):
+        self.pitchers = pitchers
+
+    def updatePitcherProjections(self, pitcherProjections):
+        self.pitcherProjections = pitcherProjections
+
+    def updatePitcherRosters(self, pitcherRosters):
+        self.pitcherRosters = pitcherRosters
+
+    def updateMatchUpPitchers(self, matchUpPitchers):
+        self.matchUpPitchers = matchUpPitchers
+
+    def updateLeagueInfo(self, leagueInfo):
+        self.leagueInfo = leagueInfo
+
+    def updateeasonStats(self, seasonStats):
+        self.seasonStats = seasonStats
+
+    """

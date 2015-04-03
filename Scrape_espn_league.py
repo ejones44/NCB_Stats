@@ -16,9 +16,10 @@ def loginToESPN(leagueID, year):
     br.open(link)
     try:
         form = br.get_form(action="https://r.espn.go.com/espn/memberservices/pc/login")
-        form['username'].value = login.username
-        form['password'].value = login.password
+        form['username'].value = login.username.value
+        form['password'].value = login.password.value
         br.submit_form(form)
+        print('\nLogging In\n')
     except:
         print('\nNo need to login!\n')
 
@@ -236,10 +237,57 @@ def scrapeMatchupPlayers():
     pass
 
 
+# returns data frame containing
+# [teamID, teamName, shortName, wins, losses, draws]
 def scrapeLeagueTeams(leagueID, year):
-    pass
+    br = loginToESPN(leagueID, year)
 
-#NCB ID = '12345678'
-#Data League = '158970'
-# scrapePlayerProjections('158970','2015')
-scrapeTeamPlayers()
+    # dataframe will have the following columns:
+    #[teamID, teamName, wins, losses, draws]
+    teams = pd.DataFrame()
+
+    br.open('http://games.espn.go.com/flb/standings?leagueId=' + str(leagueID) + '&seasonId=' + str(year))
+    tables = br.find_all('table', class_='tableBody')
+    tables = tables[:-1]
+    for t in tables:
+        print('\nTABLE\n')
+        row = t.find_all('tr')[2:]
+        for r in row:
+            data = r.find_all('td')
+            name = data[0]
+            name_row = teamNameToRow(name)
+            wins = float(data[1].text)
+            losses = float(data[2].text)
+            draw = float(data[3].text)
+            out = name_row + [wins, losses, draw]
+            teams = teams.append(pd.Series(out), ignore_index=True)
+    print(teams)
+    teams.columns = ['teamId', 'Name', 'W', 'L', 'T']
+    return teams
+
+
+def teamNameToRow(name):
+    link = name.find_all('a')[0]['href']
+    ID = link.split('&')[1]
+    teamID = int(ID[ID.find('=') + 1:])
+    teamName = name.text
+
+    return [teamID, teamName]
+
+
+def scrapeSeasonStats(leagueID, year):
+    br = loginToESPN(leagueID, year)
+
+    # dataframe will have the following columns:
+    #[teamID, teamName, wins, losses, draws]
+    teams = pd.DataFrame()
+
+    br.open('http://games.espn.go.com/flb/standings?leagueId=' + str(leagueID) + '&seasonId=' + str(year))
+    tables = br.find_all('table', class_='tableBody')
+    table = tables[-1]
+    rows = table.find_all('tr')[3:]
+
+
+teams = scrapeLeagueTeams('123478', '2015')
+teams.to_csv('NCB_teams.csv')
+print(teams)
