@@ -1,13 +1,13 @@
-,teamId,Name,W,L,T
-0,1.0,Detroit Tigers,0.0,0.0,0.0
-1,3.0,Roids in the Outfield,0.0,0.0,0.0
-2,5.0,Cleveland Wild Things,0.0,0.0,0.0
-3,11.0,Motor City Miracle,0.0,0.0,0.0
-4,15.0,The Evil Empire,0.0,0.0,0.0
-5,17.0,The Pumas,0.0,0.0,0.0
-6,2.0,Crash Davis,0.0,0.0,0.0
-7,4.0,Cleveland Indians,0.0,0.0,0.0
-8,8.0,Back Bay Bums,0.0,0.0,0.0
-9,12.0,Final 4 Spartans,0.0,0.0,0.0
-10,16.0,Atlanta 20%,0.0,0.0,0.0
-11,18.0,Richmond Braves,0.0,0.0,0.0
+,teamId,Name,Link,W,L,T
+0,1.0,Detroit Tigers,/flb/clubhouse?leagueId=123478&teamId=1&seasonId=2015,0.0,0.0,0.0
+1,3.0,Roids in the Outfield,/flb/clubhouse?leagueId=123478&teamId=3&seasonId=2015,0.0,0.0,0.0
+2,5.0,Cleveland Wild Things,/flb/clubhouse?leagueId=123478&teamId=5&seasonId=2015,0.0,0.0,0.0
+3,11.0,Motor City Miracle,/flb/clubhouse?leagueId=123478&teamId=11&seasonId=2015,0.0,0.0,0.0
+4,15.0,The Evil Empire,/flb/clubhouse?leagueId=123478&teamId=15&seasonId=2015,0.0,0.0,0.0
+5,17.0,The Pumas,/flb/clubhouse?leagueId=123478&teamId=17&seasonId=2015,0.0,0.0,0.0
+6,2.0,Crash Davis,/flb/clubhouse?leagueId=123478&teamId=2&seasonId=2015,0.0,0.0,0.0
+7,4.0,Cleveland Indians,/flb/clubhouse?leagueId=123478&teamId=4&seasonId=2015,0.0,0.0,0.0
+8,8.0,Back Bay Bums,/flb/clubhouse?leagueId=123478&teamId=8&seasonId=2015,0.0,0.0,0.0
+9,12.0,Final 4 Spartans,/flb/clubhouse?leagueId=123478&teamId=12&seasonId=2015,0.0,0.0,0.0
+10,16.0,Atlanta 20%,/flb/clubhouse?leagueId=123478&teamId=16&seasonId=2015,0.0,0.0,0.0
+11,18.0,Richmond Braves,/flb/clubhouse?leagueId=123478&teamId=18&seasonId=2015,0.0,0.0,0.0

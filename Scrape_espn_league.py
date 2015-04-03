@@ -35,13 +35,22 @@ def is_number(s):
 def nameToBatPos(d):
     #BatPos = ['Catcher', 'First Base', 'Second Base', 'Third Base', 'Shortstop', 'Left Field', 'Center Field', 'Right Field', 'Designated Hitter']
     s = d.text.format('ascii')
-    name = s[:s.find(',')]
+    name = getPlayerName(s)
     s = s[s.find(',')+2:]
-    pID = d.find_all('a')[0]['playerid']
+    pID = getPlayerID(d)
     team = s[:s.find('\xa0')]
     pos = s[s.find('\xa0')+1:]
     posOut = getBatPositions(pos)
     return [pID, name, team] + posOut
+
+
+def getPlayerName(s):
+    return s[:s.find(',')]
+
+
+def getPlayerID(d):
+    return d.find_all('a')[0]['playerid']
+
 
 def getBatPositions(s):
     posOut = [None]*9
@@ -173,7 +182,7 @@ def scrapePlayerProjections(leagueID, year):
     for d in data:
         txt = d.text.replace('\xa0', '')
         thead.append(txt.format('ascii'))
-    thead[0] = 'PlayerID'
+    thead[0] = 'PlayerId'
     if 'H/AB' in thead:
         ind = thead.index('H/AB')
         thead[ind] = 'AB'   #AB stored in ind+1
@@ -204,7 +213,7 @@ def scrapePlayerProjections(leagueID, year):
     for d in data:
         txt = d.text.replace('\xa0', '')
         thead.append(txt.format('ascii'))
-    thead[0] = 'PlayerID'
+    thead[0] = 'PlayerId'
     thead.insert(1, 'Team')
     thead.insert(1, 'Name')
     thead = thead[0:3]+PitchPos+thead[3:]
@@ -216,14 +225,46 @@ def scrapePlayerProjections(leagueID, year):
         index += 50
     Pitchers.columns = thead
 
-    print(Pitchers)
-
     Hitters.to_csv('Hitters_projections.csv')
     Pitchers.to_csv('Pitchers_projections.csv')
 
 
-def scrapeTeamPlayers(leagueID, year):
-    pass
+def scrapeTeamPlayers(leagueID, year, teams):
+    br = loginToESPN(leagueID, year)
+
+    teamBatters = pd.DataFrame()
+    teamPitchers = pd.DataFrame()
+
+    urls = list(teams['Link'])
+    for u in urls:
+        br.open('http://games.espn.go.com' + u)
+        teamId = teams[teams['Link'] == u].iloc[0]['teamId']
+        # batters
+        Btable = br.find_all('table', class_='playerTableTable tableBody')[0]
+        rows = Btable.find_all('tr')
+        rows = rows[2:]
+        for r in rows:
+            d = r.find_all('td')[1]
+            if d.find_all('a'):
+                pID = getPlayerID(d)
+                teamBatters = teamBatters.append(pd.Series([teamId, pID]), ignore_index=True)
+
+
+
+        #pitchers
+        Ptable = br.find_all('table', class_="playerTableTable tableBody playerTableMoreTable")[0]
+        rows = Ptable.find_all('tr')
+        rows = rows[2:]
+        for r in rows:
+            d = r.find_all('td')[1]
+            if d.find_all('a'):
+                pID = getPlayerID(d)
+                teamPitchers = teamPitchers.append(pd.Series([teamId, pID]), ignore_index=True)
+
+    teamBatters.columns = ['teamId', 'playerId']
+    teamPitchers.columns = ['teamId', 'playerId']
+    return teamBatters, teamPitchers
+
 
 def scrapeMatchups():
     pass
@@ -261,8 +302,7 @@ def scrapeLeagueTeams(leagueID, year):
             draw = float(data[3].text)
             out = name_row + [wins, losses, draw]
             teams = teams.append(pd.Series(out), ignore_index=True)
-    print(teams)
-    teams.columns = ['teamId', 'Name', 'W', 'L', 'T']
+    teams.columns = ['teamId', 'Name', 'Link', 'W', 'L', 'T']
     return teams
 
 
@@ -272,7 +312,7 @@ def teamNameToRow(name):
     teamID = int(ID[ID.find('=') + 1:])
     teamName = name.text
 
-    return [teamID, teamName]
+    return [teamID, teamName, link]
 
 
 def scrapeTeamStats(leagueID, year):
@@ -291,7 +331,7 @@ def scrapeTeamStats(leagueID, year):
     while '' in header:
         header.remove('')
     header.insert(0, 'Name')
-    header.insert(0, 'teamID')
+    header.insert(0, 'teamId')
     stats = rows[3:]
 
     for r in stats:
@@ -302,14 +342,14 @@ def scrapeTeamStats(leagueID, year):
         for d in data:
             if is_number(d.text):
                 data_row.append(float(d.text))
-        out = name + data_row
-        print(out)
-        teamStats = teamStats.append(pd.Series(out), ignore_index=True)
+        out = name[:2] + data_row
 
+        teamStats = teamStats.append(pd.Series(out), ignore_index=True)
     teamStats.columns = header
-    print(teamStats)
     return teamStats
 
 
-teamStats = scrapeTeamStats('123478', '2015')
-teamStats.to_csv('Team_Season_Stats.csv')
+teams = pd.read_csv('NCB_teams.csv', index_col=0)
+teamBatters, teamPitchers = scrapeTeamPlayers('123478', '2015', teams)
+teamBatters.to_csv('activeRoster_batter.csv')
+teamPitchers.to_csv('activeRoster_pitcher.csv')
