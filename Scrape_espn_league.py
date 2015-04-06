@@ -127,7 +127,7 @@ def tableToBatters(table):
     rows = rows[2:]
     for r in rows:
         data = r.find_all('td')
-        data = [data[0]] + data[8:33]+data[34:41]+[data[42]]
+        data = [data[0]] + data[8:20]
         row_data = []
         for i, d in enumerate(data):
             if i == 0:
@@ -148,7 +148,7 @@ def tableToPitchers(table):
     rows = rows[2:]
     for r in rows:
         data = r.find_all('td')
-        data = [data[0]] + data[8:39]
+        data = [data[0]] + data[8:24]
         row_data = []
         for i, d in enumerate(data):
             if i == 0:
@@ -178,7 +178,7 @@ def scrapePlayerProjections(leagueID, year):
     #get the column headers
     header = rows[1]
     data = header.find_all('td')
-    data = [data[0]] + data[8:33]+data[34:41]+[data[42]]
+    data = [data[0]] + data[8:20]
     for d in data:
         txt = d.text.replace('\xa0', '')
         thead.append(txt.format('ascii'))
@@ -209,7 +209,7 @@ def scrapePlayerProjections(leagueID, year):
     thead = []
     header = rows[1]
     data = header.find_all('td')
-    data = [data[0]] + data[8:39]
+    data = [data[0]] + data[8:24]
     for d in data:
         txt = d.text.replace('\xa0', '')
         thead.append(txt.format('ascii'))
@@ -225,8 +225,7 @@ def scrapePlayerProjections(leagueID, year):
         index += 50
     Pitchers.columns = thead
 
-    Hitters.to_csv('Hitters_projections.csv')
-    Pitchers.to_csv('Pitchers_projections.csv')
+    return Hitters, Pitchers
 
 
 def scrapeTeamPlayers(leagueID, year, teams):
@@ -349,7 +348,13 @@ def scrapeTeamStats(leagueID, year):
     return teamStats
 
 
+Hitters, Pitchers = scrapePlayerProjections('123478', '2015')
+Hitters.to_csv('Data/Hitters_projections.csv')
+Pitchers.to_csv('Data/Pitchers_projections.csv')
+
+"""
 teams = pd.read_csv('NCB_teams.csv', index_col=0)
 teamBatters, teamPitchers = scrapeTeamPlayers('123478', '2015', teams)
 teamBatters.to_csv('activeRoster_batter.csv')
 teamPitchers.to_csv('activeRoster_pitcher.csv')
+"""
